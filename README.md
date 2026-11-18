@@ -4,7 +4,7 @@
 
 # AvalancheMapper — TypeScript edition
 
-[![CI & deploy](https://github.com/deuber/AvalancheMapper-TS/actions/workflows/deploy.yml/badge.svg)](https://github.com/deuber/AvalancheMapper-TS/actions/workflows/deploy.yml)
+[![CI & deploy](https://github.com/deuber/AvalancheMapper-TS/actions/workflows/deploy.yml/badge.svg?branch=main&event=push)](https://github.com/deuber/AvalancheMapper-TS/actions/workflows/deploy.yml)
 
 Upload a photo taken at an avalanche site; the app reads the GPS coordinates out
 of the image's EXIF metadata and drops a pin on a topo map. No manual coordinate
