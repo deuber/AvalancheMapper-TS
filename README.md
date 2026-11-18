@@ -18,7 +18,22 @@ This is a ground-up TypeScript rewrite of my original vanilla-JS
 typed, tested, CI-built codebase, and fixes for several bugs I found while
 porting it.
 
-## Why
+## Why this version exists
+
+I built the original as a plain-JavaScript tool for my own backcountry
+observations. I rebuilt it in TypeScript to show how I work in a language I
+hadn't used professionally.
+
+Most of my experience is in Python, but the skills that carry over don't
+depend on the language: reading unfamiliar code, finding the root cause of a
+bug, and proving the fix with a test. While porting, I found and fixed eight
+bugs in my own v1. They're listed under [Debugging notes](#debugging-notes-bugs-found-in-v1-while-porting).
+
+I used [Claude Code](https://claude.com/claude-code) as a pair programmer,
+the same way I'd use any modern tool to get productive in a new codebase
+quickly. I reviewed and verified every change myself.
+
+## Why the tool exists
 
 As a backcountry skier I sometimes send avalanche observations to the
 [Sierra Avalanche Center](https://www.sierraavalanchecenter.org/observations)
