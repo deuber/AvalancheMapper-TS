@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Avalanche Mapper</title>
+<meta name="description" content="Pull GPS coordinates out of an avalanche-site photo and pin them on a topo map. Runs entirely in your browser. TypeScript rewrite.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📍</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,440;9..144,650&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="page">
+
+  <header>
+   <div class="hero-row">
+    <div class="hero-text">
+    <div class="eyebrow">Personal project &middot; backcountry safety tool &middot; v2</div>
+    <h1>Avalanche Mapper <span class="badge">TS</span></h1>
+    <p class="dek">
+      Upload a photo taken at an avalanche site and this reads the GPS coordinates
+      straight out of the image's metadata and drops a pin on a topo map &mdash; built to
+      make avalanche observation reports to places like the
+      <a href="https://www.sierraavalanchecenter.org/observations" target="_blank" rel="noopener">Sierra</a>
+      and <a href="https://utahavalanchecenter.org/node/add/avalanche" target="_blank" rel="noopener">Utah</a>
+      Avalanche Centers more accurate. No account, no upload to a server &mdash;
+      everything happens in your browser.
+      <a href="https://github.com/deuber/AvalancheMapper-TS" target="_blank" rel="noopener">Source on GitHub</a>.
+    </p>
+    </div>
+    <img src="/hero.jpg" width="160" height="157" alt="Avalanche Mapper concept art: a backcountry skier checking a phone app that pins a location on a mountain map.">
+   </div>
+  </header>
+
+  <section class="panel">
+    <h2>Upload a photo</h2>
+    <p class="sub">JPG, HEIC, PNG or TIFF, taken with location services on. Nothing leaves your browser &mdash; the file is read locally to extract its GPS tag, never uploaded anywhere.</p>
+
+    <label class="dropzone" id="dropzone" for="image-upload">
+      <div class="icon" aria-hidden="true">📍</div>
+      <div class="cta">Click to choose a photo, or drag one here</div>
+      <div class="hint">Any photo with embedded GPS metadata</div>
+      <input type="file" id="image-upload" accept="image/jpeg,image/heic,image/heif,image/png,image/tiff,.heic,.heif">
+    </label>
+
+    <div class="upload-result" id="uploadResult" hidden>
+      <img id="thumbnail" width="96" height="96" alt="Uploaded photo preview">
+      <div>
+        <div id="statusPill" role="status" aria-live="polite"></div>
+        <dl class="photo-details" id="photoDetails" hidden></dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Location</h2>
+    <p class="sub">Drag the marker or click the map to fine-tune &mdash; no photo required.</p>
+    <div id="map"></div>
+
+    <div class="readout" aria-live="polite">
+      <div class="readout-row">
+        <span class="label">Decimal</span><code id="decimalOut"></code>
+        <button type="button" class="btn" data-copy="decimal">Copy</button>
+      </div>
+      <div class="readout-row">
+        <span class="label">DMS</span><code id="dmsOut"></code>
+        <button type="button" class="btn" data-copy="dms">Copy</button>
+      </div>
+      <p class="source-note">Source: <span id="sourceLabel"></span></p>
+    </div>
+
+    <details>
+      <summary>Enter coordinates manually instead</summary>
+      <form class="manual-entry" id="manualForm" novalidate>
+        <input type="text" id="coordinates" aria-label="Coordinates" aria-describedby="coordError" autocomplete="off" spellcheck="false"
+          placeholder='39.166175, -120.155778  or  39°08&#39;24.9&quot;N 120°14&#39;06.0&quot;W'>
+        <button type="submit" class="btn primary">Update marker</button>
+      </form>
+      <p class="coord-error" id="coordError" hidden></p>
+    </details>
+  </section>
+
+  <section class="panel">
+    <h2>Under the hood</h2>
+    <p class="sub">A TypeScript rewrite of the <a href="https://deuber.github.io/AvalancheMapper/" target="_blank" rel="noopener">original vanilla-JS version</a>.</p>
+    <ul class="tech-list">
+      <li><strong>Strict TypeScript</strong> &mdash; <code>strict</code>, <code>noUncheckedIndexedAccess</code>, <code>exactOptionalPropertyTypes</code>; no <code>any</code>, no unchecked casts.</li>
+      <li><strong>Typed trust boundary</strong> &mdash; EXIF output arrives as <code>unknown</code> and is narrowed into a discriminated union (<code>gps | no-gps | error</code>) handled by an exhaustive <code>switch</code>.</li>
+      <li><strong>Tested</strong> &mdash; Vitest unit tests for coordinate parsing/formatting, plus an end-to-end test that writes GPS EXIF into a real JPEG and reads it back.</li>
+      <li><strong>CI/CD</strong> &mdash; GitHub Actions type-checks, tests and builds with Vite on every push, then deploys to GitHub Pages.</li>
+      <li><strong>Bugs fixed from v1</strong> &mdash; lowercase <code>s</code>/<code>w</code> hemispheres ignored, PNG/HEIC GPS never read, no lat/lng range checks; see the README for the full debugging notes.</li>
+    </ul>
+  </section>
+
+  <footer>
+    Runs entirely client-side &mdash; GPS extraction via
+    <a href="https://github.com/MikeKovarik/exifr" target="_blank" rel="noopener">exifr</a>,
+    mapping via <a href="https://leafletjs.com/" target="_blank" rel="noopener">Leaflet</a> +
+    <a href="https://opentopomap.org/" target="_blank" rel="noopener">OpenTopoMap</a> (no API key required).
+    Source: <a href="https://github.com/deuber/AvalancheMapper-TS" target="_blank" rel="noopener">github.com/deuber/AvalancheMapper-TS</a>
+  </footer>
+</div>
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>
